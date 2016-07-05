@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<head>
+	<title>harshal</title>
+</head>
+<body onload="start()">
+    <center><button type="button" onclick="location.reload()" style="z-index:999">Restart Game</button></center>
+	<canvas id="mainplayer" height="480" width="640" style="border:1px solid #d3d3d3;
+    background-color:#f1f1f1;position:absolute; background:transparent; margin-left:350px; "></canvas>
+    <canvas id="enemies1" height="480" width="640" style="border:1px solid #d3d3d3;
+    background-color:#f1f1f1; position:absolute; background:transparent; margin-left:350px"></canvas>
+    <canvas id="enemies2" height="480" width="640" style="border:1px solid #d3d3d3;
+    background-color:#f1f1f1;position:absolute; background:transparent; margin-left:350px "></canvas>
+    <script type="text/javascript">
+    var target;
+    var mygamepiece;
+    var targetposx=[];
+    var targetposy=[];
+    var targetnewposx=[];
+    var targetnewposy=[];
+    var score=0;
+    var enemies1=[];
+    var enemies2=[];
+    var p2;
+    var level=0;
+    function start()
+    {
+    var i=0;
+    var h=0;
+    var s=0;
+    var rh=0;
+    var rs=0;
+    mygamearea.start();
+    p2=new component(100, 100, 15, "green", mygamearea.context1);
+    mygamepiece = new component((mygamearea.canvas2.width/2-30)+15,mygamearea.canvas2.height/2+15, 15,"red", mygamearea.context2);  
+    for (i=0, h=255;i<3;i++, h=h+50)
+    {
+        targetposx[i]=h;
+    }
+    for (i=0, s=205;i<3;i++,s=s+50)
+    {
+        targetposy[i]=s;
+    }
+    rh=Math.floor(Math.random() * 3);
+    rs=Math.floor(Math.random() * 3);
+    if (targetposx[rh]!=mygamepiece.x && targetposy[rs]!=mygamepiece.y)
+    {
+    target=new component(targetposx[rh], targetposy[rs], 15, "blue", mygamearea.context2);
+    }
+    else 
+    {
+        target=new component(mygamepiece.x-50, mygamepiece.y-50, 15, "blue", mygamearea.context2);
+    }
+    targetnewposx[0]=0;
+    targetnewposy[0]=0;
+    for (i=1, h=255;i<4;i++, h=h+50)
+        {
+            targetnewposx[i]=h;
+        }
+        for (i=1, s=205; i<4;i++, s=s+50)
+        {
+            targetnewposy[i]=s;
+        }
+    }
+    var mygamearea={
+    	canvas1: document.getElementById("mainplayer"),
+    	canvas2: document.getElementById("enemies1"),
+        canvas3: document.getElementById("enemies2"),
+    	start: function()
+    	{
+    		this.context1=this.canvas1.getContext("2d");
+    		this.context2=this.canvas2.getContext("2d");
+            this.context3=this.canvas3.getContext("2d");
+            this.interval2=setInterval(updategamearea2, 150);
+    		this.interval1=setInterval(updategamearea1, 20);
+            this.interval3=setInterval(updategamearea3, 20);
+            this.frameNo=0;
+            window.addEventListener('keypress', function(e) {
+                mygamearea.key=e.keyCode;
+            })
+            window.addEventListener('keyup', function(e) {
+                mygamearea.key=false;
+            })
+    	},
+    	clear1: function()
+    	{
+    		this.context1.clearRect(0, 0, this.canvas1.width, this.canvas1.height);
+    	},
+    	clear2:function()
+    	{
+    		this.context2.clearRect(0, 0, this.canvas2.width, this.canvas2.height);
+    	},
+        clear3:function()
+        {
+            this.context3.clearRect(0, 0, this.canvas3.width, this.canvas3.height);
+        },
+        stop1: function()
+        {
+           clearInterval(this.interval1);
+        },
+        stop2: function()
+        {
+            clearInterval(this.interval2);
+        },
+        stop3: function()
+        {
+            clearInterval(this.interval3);
+        }
+    }
+    function component(centerX, centerY,radius, color, context) {
+    this.gamearea = mygamearea;
+    this.x=centerX;
+    this.y=centerY
+    this.speedX = 0;
+    this.speedY = 0;
+    this.radius=radius;
+    this.color=color;
+    this.ctx=context;
+    this.update = function() 
+    {
+        this.ctx.fillStyle = color;
+        this.ctx.beginPath();
+        this.ctx.arc(this.x, this.y,this.radius,0, 2 * Math.PI, false);
+        this.ctx.fill();
+    }
+    this.newPos = function()
+    {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        playerhitleft();
+        playerhitright();
+        playerhitup();
+        playerhitbotom();
+        playerhittarget();
+    }
+    this.clr=function()
+    {
+        this.ctx.clearRect(this.x, this.y, this.width, this.height);
+    }
+    
+}
+
+    function playerhitleft()
+    {
+        if (mygamepiece.x<255)
+        {
+            mygamepiece.x=255;
+        }
+    }
+    function playerhitright()
+    {
+        if (mygamepiece.x>355)
+        {
+            mygamepiece.x=355;
+        }
+    }
+    function playerhitup()
+    {
+        if (mygamepiece.y<205)
+        {
+            mygamepiece.y=205;
+        }
+    }
+    function playerhitbotom()
+    {
+        if (mygamepiece.y>305)
+        {
+            mygamepiece.y=305;
+        }
+    }
+    function playerhittarget()
+{
+    if (mygamepiece.x==target.x && mygamepiece.y==target.y)
+    {
+        target.clr();
+        rh=Math.floor(Math.random() * 3);
+        rs=Math.floor(Math.random() * 3);
+        target=new component(targetposx[rh], targetposy[rs], 15, "blue", mygamearea.context2);
+        score=score+1;
+        document.getElementById("scorehit").innerHTML="Score: " + score;
+    }
+}
+    function everyinterval(n)
+{
+    if ((mygamearea.frameNo / n) % 1 == 0) {return true;}
+    return false;
+}
+function layout()
+{
+    ctx=mygamearea.context2;
+    ctx.lineWidth=5;
+    ctx.beginPath()
+    ctx.moveTo(230, 180);
+    ctx.lineTo(380,180);
+    ctx.lineTo(380,330);
+    ctx.lineTo(230,330);
+    ctx.lineTo(230,180);
+    ctx.closePath();
+    ctx.moveTo(280,180);
+    ctx.lineTo(280,330);
+    ctx.moveTo(330,180);
+    ctx.lineTo(330,330);
+    ctx.moveTo(230,230);
+    ctx.lineTo(380,230);
+    ctx.moveTo(230,280);
+    ctx.lineTo(380,280);
+    ctx.stroke();
+}
+
+    function updategamearea2()
+    {
+    	mygamearea.clear2();
+        if (mygamearea.key&& mygamearea.key==97)
+        {
+            mygamepiece.x-=50;
+        }
+        if (mygamearea.key && mygamearea.key==100)
+        {
+            mygamepiece.x+=50;
+        }
+        if (mygamearea.key && mygamearea.key==119)
+        {
+            mygamepiece.y-=50;
+        }
+        if (mygamearea.key && mygamearea.key==115)
+        {
+            mygamepiece.y+=50;
+        }
+        layout();
+        mygamepiece.newPos();
+        mygamepiece.update();
+        target.update();
+
+    	
+    }
+    function stage1()
+    {
+        var i=0;
+        var h=0;
+        var s=0;
+        var rh=0;
+        var rs=0;
+        var x0;
+        mygamearea.frameNo += 1;
+        rh=Math.floor(Math.random() * 4);
+        rs=Math.floor(Math.random() * 4);
+        var orient=Math.floor(Math.random()*2);
+    if ( everyinterval(100))
+        {
+                var nr=Math.floor((Math.random()*3)+1);
+                enemies1.push(new component(0,targetnewposy[nr], 15, "black", mygamearea.context1));
+        }
+        for (i=0;i<enemies1.length;i++)
+        {
+            enemies1[i].x+=4;
+            enemies1[i].update();
+            if (mygamepiece.x+15>enemies1[i].x-15 && mygamepiece.x+15<enemies1[i].x+15 && mygamepiece.y==enemies1[i].y)
+            {
+                document.getElementById("level").innerHTML="You Lose!";
+                mygamearea.stop1();
+                mygamearea.stop2();
+                mygamearea.stop3();
+            }
+            if (mygamepiece.x-15>enemies1[i].x-15 && mygamepiece.x-15<enemies1[i].x+15 && mygamepiece.y==enemies1[i].y)
+            {
+                document.getElementById("level").innerHTML="You Lose!";
+                mygamearea.stop1();
+                mygamearea.stop2();
+                mygamearea.stop3();
+            }
+            if (mygamepiece.x==enemies1[i].x && mygamepiece.y-15>enemies1[i].y-15 && mygamepiece.y<enemies1[i].y+15)
+            {
+                document.getElementById("level").innerHTML="You Lose!";
+                mygamearea.stop1();
+                mygamearea.stop2();
+                mygamearea.stop3();
+            }
+            if (mygamepiece.x==enemies1[i].x && mygamepiece.y+15>enemies1[i].y-15 && mygamepiece.y+15<enemies1[i].y+15)
+            {
+                document.getElementById("level").innerHTML="You Lose!";
+                mygamearea.stop1();
+                mygamearea.stop2();
+                mygamearea.stop3();
+            }
+        }
+    }
+    function stage2()
+    {
+        var i=0;
+        var h=0;
+        var s=0;
+        var rh=0;
+        var rs=0;
+        var x0;
+        mygamearea.frameNo += 1;
+        rh=Math.floor(Math.random() * 4);
+        rs=Math.floor(Math.random() * 4);
+        var orient=Math.floor(Math.random()*2);
+    if ( everyinterval(100))
+        {
+                var nr=Math.floor((Math.random()*3)+1);
+                enemies2.push(new component(targetnewposx[nr],0, 15, "black", mygamearea.context3));
+        }
+        for (i=0;i<enemies2.length;i++)
+        {
+            enemies2[i].y+=4;
+            enemies2[i].update();
+            if (mygamepiece.x+15>enemies2[i].x-15 && mygamepiece.x+15<enemies2[i].x+15 && mygamepiece.y==enemies2[i].y)
+            {
+                document.getElementById("level").innerHTML="You Lose!";
+                mygamearea.stop1();
+                mygamearea.stop2();
+                mygamearea.stop3();
+            }
+            if (mygamepiece.x-15>enemies2[i].x-15 && mygamepiece.x-15<enemies2[i].x+15 && mygamepiece.y==enemies2[i].y)
+            {
+                document.getElementById("level").innerHTML="You Lose!";
+                mygamearea.stop1();
+                mygamearea.stop2();
+                mygamearea.stop3();
+            }
+            if (mygamepiece.x==enemies2[i].x && mygamepiece.y-15>enemies2[i].y-15 && mygamepiece.y<enemies2[i].y+15)
+            {
+                document.getElementById("level").innerHTML="You Lose!";
+                mygamearea.stop1();
+                mygamearea.stop2();
+                mygamearea.stop3();
+            }
+            if (mygamepiece.x==enemies2[i].x && mygamepiece.y+15>enemies2[i].y-15 && mygamepiece.y+15<enemies2[i].y+15)
+            {
+                document.getElementById("level").innerHTML="You Lose!";
+                mygamearea.stop1();
+                mygamearea.stop2();
+                mygamearea.stop3();
+            }
+        }
+
+    }
+    function updategamearea1()
+    {
+        mygamearea.clear1();
+        stage1();
+    }
+    function updategamearea3()
+    {
+        mygamearea.clear3();
+        stage2();
+    }
+    </script>
+    <center>
+    <h1 id="scorehit"></h1>
+    <h2 id="level"></h2>
+</center>
+<center>
+
+</center>
+    </body>
+    </html>
+
