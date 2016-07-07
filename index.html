@@ -21,7 +21,8 @@
     var enemies1=[];
     var enemies2=[];
     var p2;
-    var level=0;
+    var level=1;
+    var x;
     function start()
     {
     var i=0;
@@ -72,7 +73,6 @@
             this.context3=this.canvas3.getContext("2d");
             this.interval2=setInterval(updategamearea2, 150);
     		this.interval1=setInterval(updategamearea1, 20);
-            this.interval3=setInterval(updategamearea3, 20);
             this.frameNo=0;
             window.addEventListener('keypress', function(e) {
                 mygamearea.key=e.keyCode;
@@ -101,10 +101,6 @@
         {
             clearInterval(this.interval2);
         },
-        stop3: function()
-        {
-            clearInterval(this.interval3);
-        }
     }
     function component(centerX, centerY,radius, color, context) {
     this.gamearea = mygamearea;
@@ -229,8 +225,21 @@ function layout()
         mygamepiece.newPos();
         mygamepiece.update();
         target.update();
-
-    	
+    }
+    function stage1over()
+    {
+        if (score>10)
+        {
+            level=2;
+            document.getElementById("levelnumber").innerHTML="Level:" + level;
+            mygamearea.stop1();
+            mygamearea.clear1();
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
     function stage1()
     {
@@ -240,11 +249,12 @@ function layout()
         var rh=0;
         var rs=0;
         var x0;
+        document.getElementById("levelnumber").innerHTML="Level: " + level;
         mygamearea.frameNo += 1;
         rh=Math.floor(Math.random() * 4);
         rs=Math.floor(Math.random() * 4);
         var orient=Math.floor(Math.random()*2);
-    if ( everyinterval(100))
+    if ( everyinterval(50))
         {
                 var nr=Math.floor((Math.random()*3)+1);
                 enemies1.push(new component(0,targetnewposy[nr], 15, "black", mygamearea.context1));
@@ -258,28 +268,28 @@ function layout()
                 document.getElementById("level").innerHTML="You Lose!";
                 mygamearea.stop1();
                 mygamearea.stop2();
-                mygamearea.stop3();
+                clearInterval(x);
             }
             if (mygamepiece.x-15>enemies1[i].x-15 && mygamepiece.x-15<enemies1[i].x+15 && mygamepiece.y==enemies1[i].y)
             {
                 document.getElementById("level").innerHTML="You Lose!";
                 mygamearea.stop1();
                 mygamearea.stop2();
-                mygamearea.stop3();
+                clearInterval(x);
             }
-            if (mygamepiece.x==enemies1[i].x && mygamepiece.y-15>enemies1[i].y-15 && mygamepiece.y<enemies1[i].y+15)
+            if (mygamepiece.x==enemies1[i].x && mygamepiece.y-15>enemies1[i].y-15 && mygamepiece.y-15<enemies1[i].y+15)
             {
                 document.getElementById("level").innerHTML="You Lose!";
                 mygamearea.stop1();
                 mygamearea.stop2();
-                mygamearea.stop3();
+                clearInterval(x);
             }
             if (mygamepiece.x==enemies1[i].x && mygamepiece.y+15>enemies1[i].y-15 && mygamepiece.y+15<enemies1[i].y+15)
             {
                 document.getElementById("level").innerHTML="You Lose!";
                 mygamearea.stop1();
                 mygamearea.stop2();
-                mygamearea.stop3();
+                clearInterval(x);
             }
         }
     }
@@ -295,7 +305,7 @@ function layout()
         rh=Math.floor(Math.random() * 4);
         rs=Math.floor(Math.random() * 4);
         var orient=Math.floor(Math.random()*2);
-    if ( everyinterval(100))
+    if ( everyinterval(50))
         {
                 var nr=Math.floor((Math.random()*3)+1);
                 enemies2.push(new component(targetnewposx[nr],0, 15, "black", mygamearea.context3));
@@ -309,49 +319,91 @@ function layout()
                 document.getElementById("level").innerHTML="You Lose!";
                 mygamearea.stop1();
                 mygamearea.stop2();
-                mygamearea.stop3();
+                clearInterval(x);
             }
             if (mygamepiece.x-15>enemies2[i].x-15 && mygamepiece.x-15<enemies2[i].x+15 && mygamepiece.y==enemies2[i].y)
             {
                 document.getElementById("level").innerHTML="You Lose!";
                 mygamearea.stop1();
                 mygamearea.stop2();
-                mygamearea.stop3();
+                clearInterval(x);
             }
-            if (mygamepiece.x==enemies2[i].x && mygamepiece.y-15>enemies2[i].y-15 && mygamepiece.y<enemies2[i].y+15)
+            if (mygamepiece.x==enemies2[i].x && mygamepiece.y-15>enemies2[i].y-15 && mygamepiece.y-15<enemies2[i].y+15)
             {
                 document.getElementById("level").innerHTML="You Lose!";
                 mygamearea.stop1();
                 mygamearea.stop2();
-                mygamearea.stop3();
+                clearInterval(x);
             }
             if (mygamepiece.x==enemies2[i].x && mygamepiece.y+15>enemies2[i].y-15 && mygamepiece.y+15<enemies2[i].y+15)
             {
                 document.getElementById("level").innerHTML="You Lose!";
                 mygamearea.stop1();
                 mygamearea.stop2();
-                mygamearea.stop3();
+                clearInterval(x);
+            }
+            if (stage1over()==true && mygamepiece.x+15>enemies2[i].x-15 && mygamepiece.x+15<enemies2[i].x+15 && mygamepiece.y==enemies2[i].y )
+            {
+                mygamearea.stop1();
+                mygamearea.stop2();
+                clearInterval(x);
+
+            }
+            if(stage1over()==true && mygamepiece.x-15>enemies2[i].x-15 && mygamepiece.x-15<enemies2[i].x+15 && mygamepiece.y==enemies2[i].y)
+            {
+                mygamearea.stop1();
+                mygamearea.stop2();
+                clearInterval(x);
+            }
+            if (stage1over()==true && mygamepiece.x==enemies2[i].x && mygamepiece.y-15>enemies2[i].y-15 && mygamepiece.y-15<enemies2[i].y+15)
+            {
+                mygamearea.stop1();
+                mygamearea.stop2();
+                clearInterval(x);
+            }
+            if (stage1over()==true && mygamepiece.x==enemies2[i].x && mygamepiece.y+15>enemies2[i].y-15 && mygamepiece.y+15<enemies2[i].y+15)
+            {
+                mygamearea.stop1();
+                mygamearea.stop2();
+                clearInterval(x);
             }
         }
-
     }
     function updategamearea1()
     {
         mygamearea.clear1();
         stage1();
+        if (stage1over()==true)
+        {
+           x=setInterval(updategamearea3, 20);
+        }
     }
     function updategamearea3()
     {
         mygamearea.clear3();
         stage2();
     }
+    function stage3()
+    {
+    }
+    function stage4()
+    {
+    }
+    function updategamearea4()
+    {
+    }
+    function updategamearea5()
+    {
+
+    }
     </script>
     <center>
     <h1 id="scorehit"></h1>
     <h2 id="level"></h2>
+    <h2 id="levelnumber"></h2>
 </center>
 <center>
-<p style="margin-top:500px"><b> Press key 'w' to move up.<br>
+<p style="margin-top:450px"><b> Press key 'w' to move up.<br>
     Press key 's' to move down.<br>Press key 'a' to move left.<br>Press key 'd' to move right.<br>Move the Red piece to catch the Blue target<br>Watch Out for the black obstacles!</b></p>
 </center>
     </body>
