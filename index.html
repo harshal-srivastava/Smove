@@ -228,17 +228,30 @@
     if ((mygamearea.frameNo / n) % 1 == 0) {return true;}
     return false;
 }
-function layout()
+function layout1()
 {
     ctx=mygamearea.context2;
-    ctx.lineWidth=5;
+    
     ctx.beginPath()
+    ctx.lineWidth=7;
     ctx.moveTo(230, 180);
     ctx.lineTo(380,180);
+    ctx.lineJoin = 'bevel';
     ctx.lineTo(380,330);
+    ctx.lineJoin = 'bevel';
     ctx.lineTo(230,330);
+    ctx.lineJoin = 'bevel';
     ctx.lineTo(230,180);
     ctx.closePath();
+    /*ctx.lineWidth=2;
+    
+    */
+    ctx.stroke();
+}
+function layout2()
+{
+    ctx=mygamearea.context2;
+    ctx.lineWidth=2;
     ctx.moveTo(280,180);
     ctx.lineTo(280,330);
     ctx.moveTo(330,180);
@@ -269,7 +282,8 @@ function layout()
         {
             mygamepiece.y+=50;
         }
-        layout();
+        layout1();
+        layout2();
         mygamepiece.newPos();
         mygamepiece.update();
         target.update();
